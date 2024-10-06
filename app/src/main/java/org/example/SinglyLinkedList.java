@@ -33,8 +33,12 @@ public class SinglyLinkedList {
         head = node;
     }
 
-    void traverse() {
+    boolean traverse() {
         Node temp = head;
+        if (temp == null) {
+            logger.info("Linked list is emoty");
+            return false;
+        }
         int counter = 0;
         while (temp != null) {
             logger.info("[index:{}, data {} pointer {} ", counter, temp.data, temp.next);
@@ -42,6 +46,7 @@ public class SinglyLinkedList {
             counter++;
             temp = temp.next;
         }
+        return true;
     }
 
     void printHead() {
@@ -49,6 +54,8 @@ public class SinglyLinkedList {
     }
 
     boolean insertAtIndex(int index, int data) {
+        int counter = 0;
+
         if (index == 0) {
             insertAtBeginning(data);
             return true;
@@ -59,7 +66,6 @@ public class SinglyLinkedList {
         } else {
 
             Node temp = head;
-            int counter = 0;
             while (temp != null) {
                 if (counter == index - 1) {
                     Node node = new Node(data, null);
@@ -71,8 +77,16 @@ public class SinglyLinkedList {
                     counter++;
 
                 }
+                if (index > counter) {
+                    logger.info("Index specified is greater than list length so adding at the end");
+                    Node node = new Node(data, null);
+                    temp.next = node;
+                    return true;
+                }
             }
+
         }
+
         return false;
     }
 
@@ -91,24 +105,29 @@ public class SinglyLinkedList {
         if (head == null) {
             logger.info("HEAD is null cannot delete last element");
             return false;
-        } else {
-
-            Node temp = head;
-
-            while (temp != null) {
-                if (temp.next != null) {
-                    Node deletedNode = temp.next;
-                    if (deletedNode.next == null) {
-                        temp.next = null;
-                        current = null;
-                        break;
-
-                    }
-                }
-                temp = temp.next;
-            }
+        }
+        if (head.next == null) {
+            head = null;
+            logger.info("Deleted last element, list is now empty");
             return true;
         }
+
+        Node temp = head;
+
+        while (temp != null) {
+            if (temp.next != null) {
+                Node deletedNode = temp.next;
+                if (deletedNode.next == null) {
+                    temp.next = null;
+                    current = temp;
+                    break;
+
+                }
+            }
+            temp = temp.next;
+        }
+        return true;
+
     }
 
     boolean deleteAtIndex(int index) {
@@ -121,12 +140,12 @@ public class SinglyLinkedList {
             while (temp != null) {
                 if (counter == index) {
                     previousNode.next = temp.next;
+                    current = previousNode.next;
 
                 }
                 counter++;
                 previousNode = temp;
                 temp = temp.next;
-                current=temp;
             }
         }
         return true;
@@ -184,8 +203,10 @@ public class SinglyLinkedList {
                     }
                     break;
                 case "2":
-                    singlyLinkedList.traverse();
-                    logger.info("Successfully printed all elements in linked list");
+                    if (singlyLinkedList.traverse()) {
+                        logger.info("Successfully printed all elements in linked list");
+
+                    }
 
                     break;
                 case "3":
@@ -252,7 +273,7 @@ public class SinglyLinkedList {
                     printOperations();
                     break;
                 default:
-                    logger.info("Please enter valid option. Integer value between 1 to 9");
+                    logger.info("Please enter a valid option between 1 to 9.");
             }
 
         } while (!choice.equals("9"));
